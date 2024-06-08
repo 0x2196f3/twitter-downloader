@@ -19,7 +19,7 @@ download users all images and videos by twitter-id every 12 hours (NO TWITTER AP
 
 ## Usage
 ```bash
-docker run -d --name=twitter-downloader -v /path/to/config:/config -v /path/to/downloads:/downloads -e INTERVAL:43200 twitter-downloader
+docker run -d --name=twitter-downloader -v /path/to/config:/config -v /path/to/downloads:/downloads -e INTERVAL:43200 docker.io/0x2196f3/twitter-downloader
 ```
 
 ## How to Get twmd_cookies.json
