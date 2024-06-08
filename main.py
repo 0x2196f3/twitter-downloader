@@ -1,9 +1,11 @@
+import os
 from datetime import datetime
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 import subprocess
 import time
+import shutil
 
 
 def empty_str(string) -> bool:
@@ -20,17 +22,22 @@ def read_lines(file_path: str) -> list[str]:
     return result
 
 
+def copy_file(src_file_path: str, dst_folder_path: str):
+    shutil.copy(src_file_path, dst_folder_path)
+
+
 scheduler = BlockingScheduler()
 
-bin_path = "/app/twitter-media-downloader"
-user_path = "/config/users.txt"
+bin_path = "/app"
+config_path = "/config"
 save_path = "/downloads"
 
-cmd = bin_path + " twmd -u $USER_NAME -o " + save_path + " -a -U\n"
+cmd = bin_path + "/twitter-media-downloader twmd -u $USER_NAME -o " + save_path + " -a -U -L\n"
 
 
 def update_all(repeat=False) -> None:
-    users = read_lines(user_path)
+    users = read_lines(config_path + "/users.txt")
+    copy_file(config_path + "/twmd_cookies.json", bin_path + "/twmd_cookies.json")
 
     for _ in range(10 if repeat else 3):
         time.sleep(1)
@@ -44,8 +51,11 @@ def update_all(repeat=False) -> None:
 
 
 def main() -> None:
+    os.chdir(bin_path)
     update_all(True)
-    scheduler.add_job(update_all, 'interval', seconds=60 * 60 * 12, next_run_time=datetime.now())
+    interval = os.environ.get('INTERVAL')
+
+    scheduler.add_job(update_all, 'interval', seconds=int(interval) if interval.isdigit() else 60*60*12, next_run_time=datetime.now())
     scheduler.start()
 
 
