@@ -1,4 +1,5 @@
 import os
+import random
 from datetime import datetime
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -37,25 +38,36 @@ cmd = bin_path + "/twitter-media-downloader twmd -u $USER_NAME -o " + save_path 
 
 def update_all(repeat=False) -> None:
     users = read_lines(config_path + "/users.txt")
+
     copy_file(config_path + "/twmd_cookies.json", bin_path + "/twmd_cookies.json")
 
     for _ in range(10 if repeat else 3):
+        random.shuffle(users)
         time.sleep(1)
-        for user in users:
+        for user in users[:]:
             if empty_str(user):
                 continue
             time.sleep(1)
-            command = "(" + cmd.replace("$USER_NAME", user.replace("\n", "")) + ") > /dev/null"
+            command = cmd.replace("$USER_NAME", user.replace("\n", ""))
             print(command)
-            subprocess.call(command, shell=True)
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            print(result.stdout)
+            print(result.stderr)
+
+            if result.returncode == 0:
+                users.remove(user)
 
 
 def main() -> None:
     os.chdir(bin_path)
     update_all(True)
     interval = os.environ.get('INTERVAL')
+    if interval is None or not interval.isdigit():
+        interval = 60*60*12
+    else:
+        interval = int(interval)
 
-    scheduler.add_job(update_all, 'interval', seconds=int(interval) if interval.isdigit() else 60*60*12, next_run_time=datetime.now())
+    scheduler.add_job(update_all, 'interval', seconds=interval)
     scheduler.start()
 
 
