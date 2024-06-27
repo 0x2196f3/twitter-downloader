@@ -37,6 +37,8 @@ cmd = bin_path + "/twitter-media-downloader twmd -u $USER_NAME -o " + save_path 
 
 
 def update_all(repeat=False) -> None:
+    os.chdir(bin_path)
+
     users = read_lines(config_path + "/users.txt")
 
     copy_file(config_path + "/twmd_cookies.json", bin_path + "/twmd_cookies.json")
@@ -56,10 +58,10 @@ def update_all(repeat=False) -> None:
 
             if result.returncode == 0:
                 users.remove(user)
+            
 
 
 def main() -> None:
-    os.chdir(bin_path)
     update_all(True)
     interval = os.environ.get('INTERVAL')
     if interval is None or not interval.isdigit():
