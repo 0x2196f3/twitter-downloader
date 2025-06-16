@@ -1,5 +1,6 @@
-FROM python:3.10
+FROM python:3.12
 
-ADD main.py requirements.txt twitter-media-downloader /app/
-RUN pip install -r /app/requirements.txt
-CMD ["python3", "/app/main.py"]
+
+ADD ./app /app
+RUN pip install -r /app/requirements.txt && pip install -r /app/twitter_download/requirements.txt
+CMD ["python3", "/app/controller.py"]
