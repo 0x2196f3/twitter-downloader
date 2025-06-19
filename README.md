@@ -18,5 +18,5 @@ download users all images and videos by twitter-id every 6 hours in a docker con
 
 ## Usage
 ```bash
-docker run -d --name=twitter-downloader -v /path/to/config:/config -v /path/to/download:/download -e INTERVAL:43200 docker.io/0x2196f3/twitter-downloader
+docker run -d --name=twitter-downloader-docker -v /path/to/config:/config -v /path/to/download:/download -e INTERVAL:43200 docker.io/0x2196f3/twitter-downloader-docker
 ```
