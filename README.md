@@ -1,6 +1,6 @@
-# Twitter-Downloader
+# Twitter-Downloader-Docker
 
-download users all images and videos by twitter-id every 6 hours (login required, no twitter api required)
+download users all images and videos by twitter-id every 6 hours in a docker container (cookies required, no twitter api required)
 <br/>
 
 #### based on [twitter_download](https://github.com/caolvchong-top/twitter_download)
